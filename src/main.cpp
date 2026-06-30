@@ -1,6 +1,7 @@
 #include "SingleLevelPageTable.h"
 #include "MultiLevelPageTable.h"
 #include "LRUPageTable.h"
+#include "FIFOPageTable.h"
 
 #include <chrono>
 #include <iostream>
@@ -82,6 +83,11 @@ int main()
     );
     benchmark<LRUPageTable>(
     "LRU Page Table",
+    addresses
+    );
+    
+    benchmark<FIFOPageTable>(
+    "FIFO Page Table",
     addresses
     );
     return 0;
