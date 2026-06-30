@@ -28,4 +28,11 @@ void MultiLevelPageTable::printStats()
     std::cout << "Memory Accesses : " << accesses << '\n';
     std::cout << "Page Faults     : " << pageFaults << '\n';
     std::cout << "Frames Allocated: " << nextFrame << '\n';
+    double hitRate =
+        100.0 * (accesses - pageFaults) / accesses;
+
+    std::cout << "Hit Rate        : "
+              << hitRate
+              << "%\n";
+    std:: cout<< std:: endl;
 }

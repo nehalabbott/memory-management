@@ -1,5 +1,6 @@
 #include "SingleLevelPageTable.h"
 #include "MultiLevelPageTable.h"
+#include "LRUPageTable.h"
 
 #include <chrono>
 #include <iostream>
@@ -42,11 +43,32 @@ int main()
 
     mt19937 rng(42);
 
-    uniform_int_distribution<uint32_t> dist(0, 0xFFFFFFFF);
+    // Simulate 500 "hot" pages that are frequently accessed
+    uniform_int_distribution<uint32_t> hotPageDist(0, 499);
+
+    // Random offset within a 4KB page
+    uniform_int_distribution<uint32_t> offsetDist(0, 4095);
+
+    // Every 100 accesses, jump to a different region
+    uniform_int_distribution<uint32_t> jumpDist(500, 50000);
+
+    uint32_t currentPage = 0;
 
     for (int i = 0; i < NUM_ADDRESSES; i++)
     {
-        addresses.push_back(dist(rng));
+        if (i % 100 == 0)
+            currentPage = jumpDist(rng);
+
+        uint32_t page;
+
+        if (rng() % 10 < 9)
+            page = currentPage + hotPageDist(rng) % 20;
+        else
+            page = jumpDist(rng);
+
+        uint32_t address = (page << 12) | offsetDist(rng);
+
+        addresses.push_back(address);
     }
 
     benchmark<SingleLevelPageTable>(
@@ -58,6 +80,9 @@ int main()
         "Two-Level Page Table",
         addresses
     );
-
+    benchmark<LRUPageTable>(
+    "LRU Page Table",
+    addresses
+    );
     return 0;
 }
