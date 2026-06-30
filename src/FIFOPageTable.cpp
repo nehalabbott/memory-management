@@ -48,3 +48,20 @@ void FIFOPageTable::printStats()
 
     std::cout << "Hit Rate        : " << hitRate << "%\n";
 }
+
+Stats FIFOPageTable::getStats() const
+{
+    Stats s;
+
+    s.accesses = accesses;
+    s.pageFaults = pageFaults;
+    s.framesAllocated = nextFrame;
+    s.hits = accesses - pageFaults;
+
+    return s;
+}
+
+std::string FIFOPageTable::getName() const
+{
+    return "FIFO";
+}

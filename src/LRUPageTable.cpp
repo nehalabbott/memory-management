@@ -57,3 +57,19 @@ void LRUPageTable::printStats()
               << hitRate
               << "%\n";
 }
+Stats LRUPageTable::getStats() const
+{
+    Stats s;
+
+    s.accesses = accesses;
+    s.pageFaults = pageFaults;
+    s.framesAllocated = nextFrame;
+    s.hits = accesses - pageFaults;
+
+    return s;
+}
+
+std::string LRUPageTable::getName() const
+{
+    return "LRU";
+}

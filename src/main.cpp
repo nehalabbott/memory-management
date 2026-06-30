@@ -2,15 +2,19 @@
 #include "MultiLevelPageTable.h"
 #include "LRUPageTable.h"
 #include "FIFOPageTable.h"
+#include "HashPageTable.h"
 
 #include <chrono>
 #include <iostream>
 #include <random>
 #include <vector>
 
+#include "Benchmark.h"
+#include "CSVWriter.h"
+
 using namespace std;
-template <typename T>
-void benchmark(const string& name, const vector<uint32_t>& addresses)
+template<typename T>
+BenchmarkResult benchmark(const string& name, const vector<uint32_t>& addresses)
 {
     T pageTable;
 
@@ -34,6 +38,14 @@ void benchmark(const string& name, const vector<uint32_t>& addresses)
          << " ms\n\n";
 
     pageTable.printStats();
+
+    BenchmarkResult result;
+
+    result.algorithm = pageTable.getName();
+    result.executionTime = duration.count();
+    result.stats = pageTable.getStats();
+
+    return result;
 }
 int main()
 {
@@ -71,24 +83,43 @@ int main()
 
         addresses.push_back(address);
     }
+    vector<BenchmarkResult> results;
+    results.push_back(
 
-    benchmark<SingleLevelPageTable>(
-        "Single Level Page Table",
-        addresses
+        benchmark<SingleLevelPageTable>(
+            "Single",
+            addresses
+        )
     );
+    results.push_back(
 
-    benchmark<MultiLevelPageTable>(
-        "Two-Level Page Table",
-        addresses
+        benchmark<MultiLevelPageTable>(
+            "Two-Level Page Table",
+            addresses
+        )
     );
-    benchmark<LRUPageTable>(
-    "LRU Page Table",
-    addresses
+    results.push_back(
+
+        benchmark<LRUPageTable>(
+            "LRU Page Table",
+            addresses
+        )
     );
-    
-    benchmark<FIFOPageTable>(
-    "FIFO Page Table",
-    addresses
+    results.push_back(
+
+        benchmark<FIFOPageTable>(
+            "FIFO Page Table",
+            addresses
+        )
+    );  
+    results.push_back(
+
+        benchmark<HashPageTable>(
+            "Hash Page Table",
+            addresses
+        )
+
     );
+    CSVWriter::save(results, "results.csv");
     return 0;
 }

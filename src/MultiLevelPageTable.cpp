@@ -36,3 +36,19 @@ void MultiLevelPageTable::printStats()
               << "%\n";
     std:: cout<< std:: endl;
 }
+Stats MultiLevelPageTable::getStats() const
+{
+    Stats s;
+
+    s.accesses = accesses;
+    s.pageFaults = pageFaults;
+    s.framesAllocated = nextFrame;
+    s.hits = accesses - pageFaults;
+
+    return s;
+}
+
+std::string MultiLevelPageTable::getName() const
+{
+    return "Multi Level";
+}

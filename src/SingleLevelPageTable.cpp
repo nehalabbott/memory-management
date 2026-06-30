@@ -34,3 +34,20 @@ void SingleLevelPageTable::printStats()
               << "%\n";
     std:: cout<< std:: endl;
 }
+
+Stats SingleLevelPageTable::getStats() const
+{
+    Stats s;
+
+    s.accesses = accesses;
+    s.pageFaults = pageFaults;
+    s.framesAllocated = nextFrame;
+    s.hits = accesses - pageFaults;
+
+    return s;
+}
+
+std::string SingleLevelPageTable::getName() const
+{
+    return "Single Level";
+}

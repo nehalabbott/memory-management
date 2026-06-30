@@ -34,4 +34,7 @@ private:
 public:
     uint32_t translate(uint32_t virtualAddress) override;
     void printStats() override;
+    Stats getStats() const override;
+
+    std::string getName() const override; 
 };
